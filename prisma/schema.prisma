@@ -1,0 +1,53 @@
+// Prisma schema — Postgres (Neon) for production; set DATABASE_URL in .env / .env.local
+// or in your hosting provider's environment variables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  passwordHash String
+  fullName  String?
+  phone     String?
+  address   String?
+  startupName String?
+  industries String?   // JSON array of industry strings
+  stage     String?    // Initial idea / Pre-seed / Market-ready / Growth
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  Session[]
+  answers   Answer[]
+}
+
+model Session {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStep String   @default("personal")  // "personal" | "irl-1" ... "irl-9" | "review" | "submitted"
+  submitted  Boolean   @default(false)
+  submittedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// One row per (user, questionId). Upserted on every change so resume works.
+model Answer {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String   // e.g. "q8", "q21"
+  // Stored as JSON string — may be scalar, array (multi-select), or text
+  value      String
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, questionId])
+  @@index([userId])
+}
