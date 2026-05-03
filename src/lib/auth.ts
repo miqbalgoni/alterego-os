@@ -66,7 +66,7 @@ export async function getCurrentUser() {
   return prisma.user.findUnique({ where: { id } });
 }
 
-export const SUPPORTED_LOCALES = ["en", "es", "fr", "de", "it", "pt"] as const;
+export const SUPPORTED_LOCALES = ["en", "it"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 export function getLocaleFromCookies(): Locale {

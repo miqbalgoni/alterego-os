@@ -23,8 +23,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessions  Session[]
-  answers   Answer[]
+  sessions     Session[]
+  answers      Answer[]
+  assessments  IrlAssessment[]
+  modules      ModuleProgress[]
 }
 
 model Session {
@@ -49,5 +51,42 @@ model Answer {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, questionId])
+  @@index([userId])
+}
+
+// Per-section IRL readiness score, computed by Claude after a section is completed.
+// Re-computed (new row) when the user re-takes the section after a learning module.
+model IrlAssessment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section   String   // "irl-1" .. "irl-9"
+  score     Int      // 0..100
+  diagnosis String   // 1-sentence summary
+  strengths String   // JSON array of strings
+  gaps      String   // JSON array of strings
+  gapTags   String   // JSON array of controlled-vocabulary tags driving recommendations
+  rubricVer String   // version of the rubric the score was computed against
+  createdAt DateTime @default(now())
+
+  @@index([userId, section])
+}
+
+// Tracks the founder's progress through learning modules.
+// One row per (user, moduleId). status transitions: suggested -> started -> completed/skipped
+model ModuleProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moduleId    String    // e.g. "m14-bmc"
+  status      String    @default("suggested") // suggested | started | completed | skipped
+  beatIndex   Int       @default(0)            // current beat within the module
+  outputs     String?                         // JSON: structured submissions (BMC blocks, etc.)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, moduleId])
   @@index([userId])
 }

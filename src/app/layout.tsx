@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AskMeWidget } from "@/components/AskMeWidget";
+import { I18nProvider } from "@/i18n/I18nProvider";
+import { getLocaleFromCookies } from "@/lib/auth";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -29,11 +31,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const locale = getLocaleFromCookies();
   return (
-    <html lang="en" className={playfair.variable}>
+    <html lang={locale} className={playfair.variable}>
       <body className="honeycomb-bg">
-        <div className="relative z-10">{children}</div>
-        <AskMeWidget />
+        <I18nProvider initialLocale={locale}>
+          <div className="relative z-10">{children}</div>
+          <AskMeWidget />
+        </I18nProvider>
       </body>
     </html>
   );

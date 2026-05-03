@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Globe, Check } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { DICTIONARIES, LOCALE_LABELS } from "@/i18n/dictionaries";
@@ -10,6 +11,7 @@ type Locale = keyof typeof DICTIONARIES;
 
 export function LanguageMenu() {
   const { locale, setLocale, t } = useI18n();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -42,6 +44,14 @@ export function LanguageMenu() {
               onClick={async () => {
                 await setLocale(l);
                 setOpen(false);
+                // Hard refresh — guarantees every server component, every
+                // API-rendered string, every cached page re-runs with the
+                // new cookie. Anything less leaves stale English in the UI.
+                if (typeof window !== "undefined") {
+                  window.location.reload();
+                } else {
+                  router.refresh();
+                }
               }}
               className={clsx(
                 "flex w-full items-center justify-between px-4 py-2.5 text-sm hover:bg-hive-cream/50 transition",

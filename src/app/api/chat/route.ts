@@ -4,10 +4,12 @@
 
 import { anthropic, MODEL_ASKME, isAnthropicConfigured } from "@/lib/anthropic";
 import { retrieveContext } from "@/lib/rag";
+import { getLocaleFromCookies } from "@/lib/auth";
+import { localeName } from "@/lib/i18n/serverTranslate";
 
 export const runtime = "nodejs";
 
-const SYSTEM_PROMPT = `You are "Ask Me", the HIVE onboarding assistant inside ALTEREGO OS —
+const SYSTEM_PROMPT_BASE = `You are "Ask Me", the HIVE onboarding assistant inside ALTEREGO OS —
 an Entrepreneur Guidance Platform. You help aspiring startup founders who are filling out
 the HIVE check-in questionnaire (Investment Readiness Level, IRL 1–9). Your job is to
 clarify questions, define terms (Business Model Canvas, early adopters, KPIs, product/market
@@ -38,6 +40,11 @@ export async function POST(req: Request) {
   // Pull the latest user turn for RAG retrieval
   const lastUser = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
   const ragContext = await retrieveContext(lastUser);
+
+  const locale = getLocaleFromCookies();
+  const lang = localeName(locale);
+  const localeRule = `\n\nIMPORTANT: Reply in ${lang}${locale === "it" ? " using second person 'tu'" : ""}, regardless of the language the user wrote in.`;
+  const SYSTEM_PROMPT = SYSTEM_PROMPT_BASE + localeRule;
 
   const system = ragContext
     ? `${SYSTEM_PROMPT}\n\n<retrieved_context>\n${ragContext}\n</retrieved_context>`

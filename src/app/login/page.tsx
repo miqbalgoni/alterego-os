@@ -5,10 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HiveLogo } from "@/components/HiveLogo";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useI18n } from "@/i18n/I18nProvider";
+import { LanguageMenu } from "@/components/LanguageMenu";
 
 function LoginInner() {
   const router = useRouter();
   const search = useSearchParams();
+  const { t } = useI18n();
   const next = search.get("next") || "/onboarding";
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -20,8 +23,8 @@ function LoginInner() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!/.+@.+\..+/.test(email)) return setError("Please enter a valid email address.");
-    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (!/.+@.+\..+/.test(email)) return setError(t("common.invalidEmail"));
+    if (password.length < 8) return setError(t("auth.passwordHint"));
     setLoading(true);
     try {
       const url = mode === "signup" ? "/api/auth/signup" : "/api/auth/login";
@@ -46,6 +49,9 @@ function LoginInner() {
 
   return (
     <main className="min-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+      <div className="absolute top-4 right-4">
+        <LanguageMenu />
+      </div>
       <Link href="/" className="flex justify-center">
         <HiveLogo size={60} />
       </Link>
@@ -56,19 +62,14 @@ function LoginInner() {
           style={{ fontFamily: "var(--font-playfair)" }}
         >
           <span className="italic">
-            {mode === "signup" ? "Create your account" : "Welcome back"}
+            {mode === "signup" ? t("auth.signupTitle") : t("auth.loginTitle")}
           </span>
         </h1>
-        <p className="mt-2 text-sm text-hive-grey text-center">
-          {mode === "signup"
-            ? "Set a password to save and resume your check-in."
-            : "Log in to continue your ALTEREGO OS check-in."}
-        </p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <label className="block">
             <span className="text-xs font-semibold text-hive-grey uppercase tracking-wider">
-              Email address
+              {t("auth.email")}
             </span>
             <div className="mt-2 flex items-center gap-3 rounded-xl border border-hive-cream bg-white px-4 py-3 focus-within:ring-2 focus-within:ring-hive-orange/40 focus-within:border-hive-orange transition">
               <Mail className="w-4 h-4 text-hive-grey" />
@@ -86,7 +87,7 @@ function LoginInner() {
 
           <label className="block">
             <span className="text-xs font-semibold text-hive-grey uppercase tracking-wider">
-              Password
+              {t("auth.password")}
             </span>
             <div className="mt-2 flex items-center gap-3 rounded-xl border border-hive-cream bg-white px-4 py-3 focus-within:ring-2 focus-within:ring-hive-orange/40 focus-within:border-hive-orange transition">
               <Lock className="w-4 h-4 text-hive-grey" />
@@ -94,7 +95,7 @@ function LoginInner() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder={t("auth.passwordHint")}
                 className="flex-1 outline-none text-sm"
                 minLength={8}
                 required
@@ -110,7 +111,7 @@ function LoginInner() {
               </button>
             </div>
             {mode === "signup" && (
-              <p className="mt-1 text-[11px] text-hive-grey/80">At least 8 characters.</p>
+              <p className="mt-1 text-[11px] text-hive-grey/80">{t("auth.passwordHint")}</p>
             )}
           </label>
 
@@ -121,7 +122,7 @@ function LoginInner() {
             disabled={loading}
             className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-hive-orange px-6 py-3.5 text-sm font-semibold text-white shadow-soft hover:bg-hive-amber transition disabled:opacity-60"
           >
-            {loading ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
+            {loading ? t("common.loading") : mode === "signup" ? t("auth.signupCta") : t("auth.loginCta")}
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
@@ -129,24 +130,24 @@ function LoginInner() {
         <div className="mt-5 text-center text-xs text-hive-grey">
           {mode === "signup" ? (
             <>
-              Already have an account?{" "}
+              {t("auth.haveAccount")}{" "}
               <button
                 type="button"
                 onClick={() => { setMode("login"); setError(""); }}
                 className="text-hive-orange font-semibold hover:underline"
               >
-                Log in
+                {t("auth.switchToLogin")}
               </button>
             </>
           ) : (
             <>
-              Don&apos;t have an account?{" "}
+              {t("auth.noAccount")}{" "}
               <button
                 type="button"
                 onClick={() => { setMode("signup"); setError(""); }}
                 className="text-hive-orange font-semibold hover:underline"
               >
-                Sign up
+                {t("auth.switchToSignup")}
               </button>
             </>
           )}
