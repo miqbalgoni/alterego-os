@@ -2,21 +2,29 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useI18n } from "@/i18n/I18nProvider";
 
 interface Msg { role: "user" | "assistant"; content: string; }
 
 export function AskMeWidget() {
+  const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      content:
-        "Hi! I'm Ask Me — your HIVE guide. If any question in the form feels unclear, ask me and I'll explain in plain language. I can also help with the Italian Startup Act, the Business Model Canvas, IRL stages, and more.",
-    },
+    { role: "assistant", content: t("askme.empty") },
   ]);
   const [streaming, setStreaming] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessages(prev =>
+      prev.length === 1 && prev[0].role === "assistant"
+        ? [{ role: "assistant", content: t("askme.empty") }]
+        : prev
+    );
+  }, [locale, t]);
 
   useEffect(() => {
     scrollerRef.current?.scrollTo({ top: 99999, behavior: "smooth" });
@@ -62,11 +70,11 @@ export function AskMeWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Ask Me"
+          aria-label={t("askme.title")}
           className="fixed right-4 sm:right-6 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] sm:bottom-6 z-50 group inline-flex items-center gap-2 rounded-full bg-hive-orange text-white px-4 sm:px-5 h-12 sm:h-auto sm:py-3.5 shadow-soft hover:bg-hive-amber transition pulse-glow"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="font-semibold text-sm hidden sm:inline">Ask Me</span>
+          <span className="font-semibold text-sm hidden sm:inline">{t("askme.title")}</span>
         </button>
       )}
 
@@ -78,7 +86,7 @@ export function AskMeWidget() {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="leading-tight">
-                <div className="font-bold text-sm">Ask Me</div>
+                <div className="font-bold text-sm">{t("askme.title")}</div>
                 <div className="text-[11px] opacity-90">HIVE Assistant</div>
               </div>
             </div>
@@ -98,13 +106,37 @@ export function AskMeWidget() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm whitespace-pre-wrap ${
+                  className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm ${
                     m.role === "user"
-                      ? "bg-hive-orange text-white rounded-br-sm"
+                      ? "bg-hive-orange text-white rounded-br-sm whitespace-pre-wrap"
                       : "bg-white text-hive-dark border border-hive-cream rounded-bl-sm"
                   }`}
                 >
-                  {m.content || (streaming && i === messages.length - 1 ? "…" : "")}
+                  {m.role === "user" ? (
+                    m.content
+                  ) : m.content ? (
+                    <div className="askme-md">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a
+                              {...props}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-hive-orange underline hover:text-hive-amber"
+                            />
+                          ),
+                        }}
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    </div>
+                  ) : streaming && i === messages.length - 1 ? (
+                    "…"
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             ))}
@@ -116,7 +148,7 @@ export function AskMeWidget() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && send()}
-                placeholder="Ask anything about the form…"
+                placeholder={t("askme.placeholder")}
                 className="flex-1 text-sm outline-none"
                 disabled={streaming}
               />

@@ -40,6 +40,7 @@ export type LocaleKey =
   | "common.selectMax"
   | "common.invalidEmail"
   | "common.fieldRequired"
+  | "common.specify"
   // Landing
   | "landing.badge"
   | "landing.title.welcome"
@@ -251,6 +252,41 @@ export type LocaleKey =
   | "thankYou.title"
   | "thankYou.subtitle"
   | "thankYou.cta"
+  // Report card
+  | "report.eyebrow"
+  | "report.title"
+  | "report.subtitle"
+  | "report.issuedTo"
+  | "report.startup"
+  | "report.date"
+  | "report.compositeLabel"
+  | "report.compositeOf"
+  | "report.tier.exceptional"
+  | "report.tier.strong"
+  | "report.tier.developing"
+  | "report.tier.early"
+  | "report.tier.notReady"
+  | "report.profile"
+  | "report.profileSub"
+  | "report.marks"
+  | "report.marksSub"
+  | "report.col.dimension"
+  | "report.col.score"
+  | "report.col.status"
+  | "report.col.signal"
+  | "report.status.passed"
+  | "report.status.gap"
+  | "report.status.pending"
+  | "report.signature"
+  | "report.signature.role"
+  | "report.seal"
+  | "report.download"
+  | "report.downloading"
+  | "report.continue"
+  | "report.notAssessed"
+  | "report.footnote"
+  | "report.page"
+  | "report.of"
   // Personal info field labels (keys p_*)
   | "personal.email"
   | "personal.fullName"
@@ -307,6 +343,7 @@ const en: Dict = {
   "common.selectMax": "Please select at most",
   "common.invalidEmail": "Enter a valid email address.",
   "common.fieldRequired": "This field is required.",
+  "common.specify": "Please specify…",
   // Landing
   "landing.badge": "AI Onboarding",
   "landing.title.welcome": "Welcome to",
@@ -524,13 +561,52 @@ const en: Dict = {
   "sectionVideos.openExternal": "Open ↗",
   // Ask Me
   "askme.title": "Ask Me",
-  "askme.placeholder": "Ask a question…",
+  "askme.placeholder": "Ask anything about the form…",
   "askme.send": "Send",
-  "askme.empty": "Hi! I'm your onboarding assistant. Ask anything about a question.",
+  "askme.empty":
+    "Hi! I'm Ask Me — your HIVE guide. If any question in the form feels unclear, ask me and I'll explain in plain language. I can also help with the Italian Startup Act, the Business Model Canvas, IRL stages, and more.",
   // Thank you
   "thankYou.title": "Thank you!",
   "thankYou.subtitle": "Your check-in is complete. The HIVE team will be in touch shortly.",
   "thankYou.cta": "Back to home",
+  // Report card
+  "report.eyebrow": "Founder Report Card",
+  "report.title": "Your IRL Readiness Report",
+  "report.subtitle":
+    "A snapshot of where you stand across the nine dimensions of investment readiness.",
+  "report.issuedTo": "Issued to",
+  "report.startup": "Startup",
+  "report.date": "Date",
+  "report.compositeLabel": "Composite Score",
+  "report.compositeOf": "out of 100",
+  "report.tier.exceptional": "Exceptional readiness",
+  "report.tier.strong": "Strong readiness",
+  "report.tier.developing": "Developing readiness",
+  "report.tier.early": "Early readiness",
+  "report.tier.notReady": "Foundations forming",
+  "report.profile": "Readiness Radar",
+  "report.profileSub":
+    "Each axis is one IRL dimension. The greener and rounder, the more investor-ready.",
+  "report.marks": "IRL Marks",
+  "report.marksSub": "Per-dimension scores out of 100, with passing threshold at 65.",
+  "report.col.dimension": "Dimension",
+  "report.col.score": "Score",
+  "report.col.status": "Status",
+  "report.col.signal": "Signal",
+  "report.status.passed": "Passed",
+  "report.status.gap": "Needs work",
+  "report.status.pending": "Pending",
+  "report.signature": "Reviewed by ALTEREGO OS",
+  "report.signature.role": "Investment Readiness Engine",
+  "report.seal": "Verified",
+  "report.download": "Download report",
+  "report.downloading": "Preparing PDF…",
+  "report.continue": "Continue",
+  "report.notAssessed": "Not assessed",
+  "report.footnote":
+    "This report is generated from your responses and the IRL rubric. Re-take any section after a learning module to see your score evolve.",
+  "report.page": "Page",
+  "report.of": "of",
   // Personal
   "personal.email": "Email",
   "personal.fullName": "Full Name",
@@ -586,6 +662,7 @@ const it: Dict = {
   "common.selectMax": "Seleziona al massimo",
   "common.invalidEmail": "Inserisci un indirizzo email valido.",
   "common.fieldRequired": "Questo campo è obbligatorio.",
+  "common.specify": "Specifica…",
   // Landing
   "landing.badge": "Onboarding con AI",
   "landing.title.welcome": "Benvenuto in",
@@ -805,13 +882,53 @@ const it: Dict = {
   "sectionVideos.openExternal": "Apri ↗",
   // Ask Me
   "askme.title": "Chiedimi",
-  "askme.placeholder": "Fai una domanda…",
+  "askme.placeholder": "Chiedimi qualsiasi cosa sul modulo…",
   "askme.send": "Invia",
-  "askme.empty": "Ciao! Sono il tuo assistente di onboarding. Chiedimi qualsiasi cosa.",
+  "askme.empty":
+    "Ciao! Sono Chiedimi — la tua guida HIVE. Se una domanda del modulo non ti è chiara, chiedimelo e te la spiego in parole semplici. Posso aiutarti anche con lo Startup Act italiano, il Business Model Canvas, le fasi IRL e altro ancora.",
   // Thank you
   "thankYou.title": "Grazie!",
   "thankYou.subtitle": "Il tuo check-in è completo. Il team HIVE ti contatterà a breve.",
   "thankYou.cta": "Torna alla home",
+  // Report card
+  "report.eyebrow": "Pagella del Founder",
+  "report.title": "Il tuo Report di Readiness IRL",
+  "report.subtitle":
+    "Una fotografia del tuo livello sulle nove dimensioni della investment readiness.",
+  "report.issuedTo": "Rilasciato a",
+  "report.startup": "Startup",
+  "report.date": "Data",
+  "report.compositeLabel": "Punteggio complessivo",
+  "report.compositeOf": "su 100",
+  "report.tier.exceptional": "Readiness eccezionale",
+  "report.tier.strong": "Readiness solida",
+  "report.tier.developing": "Readiness in sviluppo",
+  "report.tier.early": "Readiness iniziale",
+  "report.tier.notReady": "Fondamenta in formazione",
+  "report.profile": "Radar di Readiness",
+  "report.profileSub":
+    "Ogni asse è una dimensione IRL. Più verde e rotonda, più sei pronto per gli investitori.",
+  "report.marks": "Voti IRL",
+  "report.marksSub":
+    "Punteggi per dimensione su 100, con soglia di superamento a 65.",
+  "report.col.dimension": "Dimensione",
+  "report.col.score": "Punteggio",
+  "report.col.status": "Stato",
+  "report.col.signal": "Segnale",
+  "report.status.passed": "Superato",
+  "report.status.gap": "Da rafforzare",
+  "report.status.pending": "In sospeso",
+  "report.signature": "Verificato da ALTEREGO OS",
+  "report.signature.role": "Investment Readiness Engine",
+  "report.seal": "Verificato",
+  "report.download": "Scarica report",
+  "report.downloading": "Preparo il PDF…",
+  "report.continue": "Continua",
+  "report.notAssessed": "Non valutato",
+  "report.footnote":
+    "Questo report è generato dalle tue risposte e dalla rubrica IRL. Rifai una sezione dopo un modulo per vedere il punteggio evolvere.",
+  "report.page": "Pagina",
+  "report.of": "di",
   // Personal
   "personal.email": "Email",
   "personal.fullName": "Nome completo",

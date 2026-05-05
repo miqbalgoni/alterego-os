@@ -120,7 +120,7 @@ export default function ReviewPage() {
         }
         return;
       }
-      router.push("/onboarding/thank-you");
+      router.push("/onboarding/report-card");
     } catch {
       setError("Submit failed. Please try again.");
     } finally {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { HiveLogo } from "@/components/HiveLogo";
-import { CheckCircle2, Home } from "lucide-react";
+import { CheckCircle2, Home, FileText } from "lucide-react";
 
 export default function ThankYouPage() {
   useEffect(() => {
@@ -31,12 +31,20 @@ export default function ThankYouPage() {
           of your entrepreneurial journey.
         </p>
 
-        <Link
-          href="/"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-hive-orange px-6 py-3 text-sm font-semibold text-white shadow-soft hover:bg-hive-amber transition"
-        >
-          <Home className="w-4 h-4" /> Back to home
-        </Link>
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/onboarding/report-card"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-hive-orange to-hive-amber px-6 py-3 text-sm font-semibold text-white shadow-soft hover:opacity-95 transition"
+          >
+            <FileText className="w-4 h-4" /> View report card
+          </Link>
+          <Link
+            href="/onboarding/personal"
+            className="inline-flex items-center gap-2 rounded-full border border-hive-cream bg-white px-6 py-3 text-sm font-semibold text-hive-dark hover:bg-hive-cream/40 transition"
+          >
+            <Home className="w-4 h-4" /> Back to home
+          </Link>
+        </div>
       </div>
     </main>
   );

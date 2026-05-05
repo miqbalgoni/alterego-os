@@ -93,3 +93,58 @@ body {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* Markdown rendering inside the AskMe chat bubble */
+.askme-md > * + * { margin-top: 0.5rem; }
+.askme-md p { margin: 0; line-height: 1.45; }
+.askme-md strong { font-weight: 700; color: #2A2A2A; }
+.askme-md em { font-style: italic; }
+.askme-md h1,
+.askme-md h2,
+.askme-md h3,
+.askme-md h4 { font-weight: 700; color: #2A2A2A; line-height: 1.25; }
+.askme-md h1 { font-size: 1.05rem; }
+.askme-md h2 { font-size: 1rem; }
+.askme-md h3 { font-size: 0.95rem; }
+.askme-md h4 { font-size: 0.9rem; }
+.askme-md ul,
+.askme-md ol { padding-left: 1.1rem; margin: 0; }
+.askme-md ul { list-style: disc; }
+.askme-md ol { list-style: decimal; }
+.askme-md li + li { margin-top: 0.2rem; }
+.askme-md li > p { display: inline; }
+.askme-md code {
+  background: rgba(245,166,35,0.12);
+  color: #B45309;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.3rem;
+  font-size: 0.85em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.askme-md pre {
+  background: #1F1F1F;
+  color: #F5F5F5;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  overflow-x: auto;
+  font-size: 0.8rem;
+}
+.askme-md pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+.askme-md blockquote {
+  border-left: 3px solid #F5A623;
+  padding-left: 0.6rem;
+  color: #5C5C5C;
+  font-style: italic;
+}
+.askme-md hr { border: 0; border-top: 1px solid #FFE7BC; }
+.askme-md table { border-collapse: collapse; font-size: 0.8rem; }
+.askme-md th, .askme-md td {
+  border: 1px solid #FFE7BC;
+  padding: 0.25rem 0.45rem;
+  text-align: left;
+}
