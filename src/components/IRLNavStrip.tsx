@@ -5,30 +5,53 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useI18n } from "@/i18n/I18nProvider";
 import { getSectionLongLabel } from "@/i18n/getters";
+import type { LocaleKey } from "@/i18n/dictionaries";
 
-const STEPS = Array.from({ length: 9 }, (_, i) => i + 1);
+interface Step {
+  key: string;          // unique key for matching active state
+  pill: string;         // text shown inside the pill
+  href: string;
+  labelKey: LocaleKey;  // tooltip / aria-label
+}
+
+const STEPS: Step[] = [
+  { key: "personal", pill: "P", href: "/onboarding/personal", labelKey: "section.personal" },
+  { key: "0",        pill: "0", href: "/onboarding/irl/0",     labelKey: "irl.long.0" },
+  { key: "1",        pill: "1", href: "/onboarding/irl/1",     labelKey: "irl.long.1" },
+  { key: "2",        pill: "2", href: "/onboarding/irl/2",     labelKey: "irl.long.2" },
+  { key: "3",        pill: "3", href: "/onboarding/irl/3",     labelKey: "irl.long.3" },
+  { key: "4",        pill: "4", href: "/onboarding/irl/4",     labelKey: "irl.long.4" },
+  { key: "5",        pill: "5", href: "/onboarding/irl/5",     labelKey: "irl.long.5" },
+  { key: "6",        pill: "6", href: "/onboarding/irl/6",     labelKey: "irl.long.6" },
+  { key: "7",        pill: "7", href: "/onboarding/irl/7",     labelKey: "irl.long.7" },
+  { key: "8",        pill: "8", href: "/onboarding/irl/8",     labelKey: "irl.long.8" },
+  { key: "9",        pill: "9", href: "/onboarding/irl/9",     labelKey: "irl.long.9" },
+];
 
 export function IRLNavStrip() {
   const pathname = usePathname() ?? "";
-  const { locale } = useI18n();
+  const { t } = useI18n();
 
-  // Match /onboarding/irl/<N> and /onboarding/irl/<N>/...  (e.g., /result)
-  const match = pathname.match(/\/onboarding\/irl\/(\d+)(?:\/|$)/);
-  const activeNum = match ? parseInt(match[1], 10) : null;
+  let activeKey: string | null = null;
+  if (pathname.startsWith("/onboarding/personal")) {
+    activeKey = "personal";
+  } else {
+    const m = pathname.match(/\/onboarding\/irl\/(\d+)(?:\/|$)/);
+    if (m) activeKey = m[1];
+  }
 
   return (
     <nav
-      aria-label="IRL sections"
+      aria-label="Sections"
       className="flex items-center justify-center gap-0.5 sm:gap-1 overflow-x-auto px-2 py-0.5"
     >
-      {STEPS.map((n, idx) => {
-        const isActive = activeNum === n;
-        const sectionId = `irl-${n}`;
-        const label = getSectionLongLabel(sectionId, locale);
+      {STEPS.map((s, idx) => {
+        const isActive = activeKey === s.key;
+        const label = t(s.labelKey);
         return (
-          <div key={n} className="flex items-center gap-0.5 sm:gap-1">
+          <div key={s.key} className="flex items-center gap-0.5 sm:gap-1">
             <Link
-              href={`/onboarding/irl/${n}`}
+              href={s.href}
               title={label}
               aria-label={label}
               aria-current={isActive ? "page" : undefined}
@@ -40,7 +63,7 @@ export function IRLNavStrip() {
                   : "bg-white text-hive-grey border-hive-cream hover:border-hive-orange hover:text-hive-orange"
               )}
             >
-              {n}
+              {s.pill}
             </Link>
             {idx < STEPS.length - 1 && (
               <span
