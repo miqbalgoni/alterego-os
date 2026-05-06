@@ -251,6 +251,8 @@ export type LocaleKey =
   // Thank-you page
   | "thankYou.title"
   | "thankYou.subtitle"
+  | "thankYou.subtitleExtra"
+  | "thankYou.viewReport"
   | "thankYou.cta"
   // Report card
   | "report.eyebrow"
@@ -564,10 +566,13 @@ const en: Dict = {
   "askme.placeholder": "Ask anything about the form…",
   "askme.send": "Send",
   "askme.empty":
-    "Hi! I'm Ask Me — your HIVE guide. If any question in the form feels unclear, ask me and I'll explain in plain language. I can also help with the Italian Startup Act, the Business Model Canvas, IRL stages, and more.",
+    "Hi! I'm your HIVE guide. If any question in the form feels unclear, ask me and I'll explain in plain language. I can also help with the Italian Startup Act, the Business Model Canvas, IRL stages, and more.",
   // Thank you
   "thankYou.title": "Thank you!",
-  "thankYou.subtitle": "Your check-in is complete. The HIVE team will be in touch shortly.",
+  "thankYou.subtitle": "Your ALTEREGO OS check-in has been submitted successfully.",
+  "thankYou.subtitleExtra":
+    "Our team will review your responses and get in touch soon with the next steps of your entrepreneurial journey.",
+  "thankYou.viewReport": "View report card",
   "thankYou.cta": "Back to home",
   // Report card
   "report.eyebrow": "Founder Report Card",
@@ -885,10 +890,13 @@ const it: Dict = {
   "askme.placeholder": "Chiedimi qualsiasi cosa sul modulo…",
   "askme.send": "Invia",
   "askme.empty":
-    "Ciao! Sono Chiedimi — la tua guida HIVE. Se una domanda del modulo non ti è chiara, chiedimelo e te la spiego in parole semplici. Posso aiutarti anche con lo Startup Act italiano, il Business Model Canvas, le fasi IRL e altro ancora.",
+    "Ciao! Sono la tua guida HIVE. Se una domanda del modulo non ti è chiara, chiedimelo e te la spiego in parole semplici. Posso aiutarti anche con lo Startup Act italiano, il Business Model Canvas, le fasi IRL e altro ancora.",
   // Thank you
   "thankYou.title": "Grazie!",
-  "thankYou.subtitle": "Il tuo check-in è completo. Il team HIVE ti contatterà a breve.",
+  "thankYou.subtitle": "Il tuo check-in di ALTEREGO OS è stato inviato con successo.",
+  "thankYou.subtitleExtra":
+    "Il nostro team esaminerà le tue risposte e ti contatterà a breve con i prossimi passi del tuo percorso imprenditoriale.",
+  "thankYou.viewReport": "Vedi la pagella",
   "thankYou.cta": "Torna alla home",
   // Report card
   "report.eyebrow": "Pagella del Founder",

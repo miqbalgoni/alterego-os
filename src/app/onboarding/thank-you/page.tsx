@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { HiveLogo } from "@/components/HiveLogo";
 import { CheckCircle2, Home, FileText } from "lucide-react";
+import { useI18n } from "@/i18n/I18nProvider";
 
 export default function ThankYouPage() {
+  const { t } = useI18n();
+
   useEffect(() => {
     // Optional: clear local session so a fresh start begins cleanly
     // localStorage.removeItem("alterego_session");
@@ -21,14 +24,13 @@ export default function ThankYouPage() {
         </div>
 
         <h1 className="mt-6 text-3xl md:text-4xl font-extrabold text-hive-dark">
-          Thank you!
+          {t("thankYou.title")}
         </h1>
         <p className="mt-3 text-base text-hive-grey">
-          Your ALTEREGO OS check-in has been submitted successfully.
+          {t("thankYou.subtitle")}
         </p>
         <p className="mt-2 text-sm text-hive-grey">
-          Our team will review your responses and get in touch soon with the next steps
-          of your entrepreneurial journey.
+          {t("thankYou.subtitleExtra")}
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -36,13 +38,13 @@ export default function ThankYouPage() {
             href="/onboarding/report-card"
             className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-hive-orange to-hive-amber px-6 py-3 text-sm font-semibold text-white shadow-soft hover:opacity-95 transition"
           >
-            <FileText className="w-4 h-4" /> View report card
+            <FileText className="w-4 h-4" /> {t("thankYou.viewReport")}
           </Link>
           <Link
             href="/onboarding/personal"
             className="inline-flex items-center gap-2 rounded-full border border-hive-cream bg-white px-6 py-3 text-sm font-semibold text-hive-dark hover:bg-hive-cream/40 transition"
           >
-            <Home className="w-4 h-4" /> Back to home
+            <Home className="w-4 h-4" /> {t("thankYou.cta")}
           </Link>
         </div>
       </div>
