@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -9,7 +10,10 @@ import { useI18n } from "@/i18n/I18nProvider";
 interface Msg { role: "user" | "assistant"; content: string; }
 
 export function AskMeWidget() {
+  const pathname = usePathname();
   const { t, locale } = useI18n();
+  // Hide the founder-facing AskMe widget from admin pages — admins have their own tools.
+  if (pathname?.startsWith("/admin")) return null;
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([

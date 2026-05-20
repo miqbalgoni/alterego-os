@@ -117,6 +117,17 @@ function LoginInner() {
 
           {error && <div className="text-xs text-red-600">{error}</div>}
 
+          {mode === "login" && (
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-xs text-hive-grey hover:text-hive-orange hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}

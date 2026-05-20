@@ -50,6 +50,10 @@ export default function LandingPage() {
 
       <footer className="w-full max-w-5xl text-center text-[11px] sm:text-xs text-hive-grey/60 pt-8 sm:pt-10 safe-pb">
         © {new Date().getFullYear()} HIVE Business Accelerator · ALTEREGO OS
+        <span className="mx-2 text-hive-grey/30">·</span>
+        <Link href="/admin/login" className="hover:text-hive-orange transition">
+          Staff
+        </Link>
       </footer>
     </main>
   );

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { verifyPassword, createSessionCookie } from "@/lib/auth";
+import { reconcileAdminRole, isAdminRole } from "@/lib/admin";
 
 const Body = z.object({
   email: z.string().email(),
@@ -23,7 +24,15 @@ export async function POST(req: Request) {
       );
     }
     await createSessionCookie(user.id);
-    return NextResponse.json({ ok: true, userId: user.id, email: user.email });
+    await reconcileAdminRole(user.id, email);
+    await prisma.user.update({ where: { id: user.id }, data: { lastSeenAt: new Date() } });
+    const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { role: true } });
+    return NextResponse.json({
+      ok: true,
+      userId: user.id,
+      email: user.email,
+      isAdmin: isAdminRole(fresh?.role),
+    });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

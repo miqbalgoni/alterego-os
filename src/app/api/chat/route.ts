@@ -3,9 +3,10 @@
 // Gracefully degrades if ANTHROPIC_API_KEY is missing.
 
 import { anthropic, MODEL_ASKME, isAnthropicConfigured } from "@/lib/anthropic";
-import { retrieveContext } from "@/lib/rag";
-import { getLocaleFromCookies } from "@/lib/auth";
+import { retrieveContextDetailed } from "@/lib/rag";
+import { getLocaleFromCookies, getUserIdFromCookies } from "@/lib/auth";
 import { localeName } from "@/lib/i18n/serverTranslate";
+import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
 
@@ -39,9 +40,10 @@ export async function POST(req: Request) {
 
   // Pull the latest user turn for RAG retrieval
   const lastUser = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
-  const ragContext = await retrieveContext(lastUser);
+  const { context: ragContext, sources: ragSources } = await retrieveContextDetailed(lastUser);
 
   const locale = getLocaleFromCookies();
+  const userId = getUserIdFromCookies();
   const lang = localeName(locale);
   const localeRule = `\n\nIMPORTANT: Reply in ${lang}${locale === "it" ? " using second person 'tu'" : ""}, regardless of the language the user wrote in.`;
   const SYSTEM_PROMPT = SYSTEM_PROMPT_BASE + localeRule;
@@ -51,6 +53,7 @@ export async function POST(req: Request) {
     : SYSTEM_PROMPT;
 
   const encoder = new TextEncoder();
+  let fullReply = "";
   const stream = new ReadableStream({
     async start(controller) {
       try {
@@ -73,13 +76,30 @@ export async function POST(req: Request) {
             event.type === "content_block_delta" &&
             event.delta.type === "text_delta"
           ) {
-            controller.enqueue(encoder.encode(event.delta.text));
+            const t = event.delta.text;
+            fullReply += t;
+            controller.enqueue(encoder.encode(t));
           }
         }
         controller.close();
       } catch (e) {
         controller.enqueue(encoder.encode("\n[Ask Me error: " + String(e) + "]"));
         controller.close();
+      } finally {
+        // Best-effort log — failures here never affect the user response.
+        if (lastUser && fullReply) {
+          prisma.chatLog
+            .create({
+              data: {
+                userId: userId,
+                locale,
+                userMessage: lastUser.slice(0, 4000),
+                assistantMessage: fullReply.slice(0, 8000),
+                ragSources: ragSources.length > 0 ? JSON.stringify(ragSources) : null,
+              },
+            })
+            .catch(err => console.error("[chat] log failed", err));
+        }
       }
     },
   });

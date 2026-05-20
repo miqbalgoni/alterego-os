@@ -20,6 +20,8 @@ model User {
   startupName String?
   industries String?   // JSON array of industry strings
   stage     String?    // Initial idea / Pre-seed / Market-ready / Growth
+  role      String   @default("FOUNDER") // FOUNDER | ADMIN | SUPERADMIN
+  lastSeenAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -27,6 +29,112 @@ model User {
   answers      Answer[]
   assessments  IrlAssessment[]
   modules      ModuleProgress[]
+  chatLogs     ChatLog[]
+  adminActions AdminLog[] @relation("AdminActor")
+  uploads      KnowledgeDocument[] @relation("DocUploader")
+  resetTokens  PasswordResetToken[]
+
+  @@index([role])
+}
+
+// Single-use, time-limited password reset tokens.
+// We store the SHA-256 hash of the token, not the token itself — the plaintext
+// only ever exists in the user's email link and the browser URL bar.
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique  // sha256 hex of the raw token
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Audit log of admin actions — populated by anything calling logAdminAction()
+model AdminLog {
+  id           String   @id @default(cuid())
+  adminId      String
+  admin        User     @relation("AdminActor", fields: [adminId], references: [id], onDelete: Cascade)
+  action       String   // "user.view" | "user.impersonate" | "doc.upload" | "doc.delete" | "rubric.update" | "export.csv" | "admin.promote" | ...
+  resourceType String?  // "user" | "document" | "rubric" | "chat"
+  resourceId   String?
+  metadata     String?  // JSON blob with extra context (search query, filters, etc.)
+  createdAt    DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([resourceType, resourceId])
+}
+
+// Admin-uploaded knowledge sources powering AskMe RAG.
+// One document = one source file; many chunks per document.
+model KnowledgeDocument {
+  id          String   @id @default(cuid())
+  title       String
+  source      String   // human-readable source label, e.g. "Italian Startup Act §4"
+  filename    String?
+  mimeType    String?
+  sizeBytes   Int?
+  uploadedById String?
+  uploadedBy  User?    @relation("DocUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  status      String   @default("active") // active | archived
+  tags        String?  // JSON array of tags
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chunks      KnowledgeChunk[]
+
+  @@index([status])
+}
+
+// Indexed chunk for retrieval. Postgres full-text search on `text`.
+model KnowledgeChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  document   KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  ordinal    Int      // chunk position within document, for ordering
+  text       String
+  tokens     Int?     // approximate token count
+  createdAt  DateTime @default(now())
+
+  @@index([documentId])
+}
+
+// Log of every AskMe turn for admin review and prompt/RAG improvement.
+// Anonymous turns (logged-out users) have userId = null.
+model ChatLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  locale     String?  // "en" | "it"
+  userMessage String  // last user turn
+  assistantMessage String // full assistant reply
+  ragSources String?  // JSON array of retrieved chunk ids / source labels
+  flagged    Boolean  @default(false)
+  flagReason String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([flagged])
+}
+
+// Admin-editable overrides for the IRL scoring rubric.
+// One row per section + version. Most recent active version per section is used.
+model RubricOverride {
+  id        String   @id @default(cuid())
+  section   String   // "irl-1" .. "irl-9"
+  version   String   // e.g. "2026-05-v2"
+  active    Boolean  @default(true)
+  rubricJson String  // full rubric override (criteria + weights + gap tags)
+  notes     String?
+  createdById String?
+  createdAt DateTime @default(now())
+
+  @@index([section, active])
 }
 
 model Session {

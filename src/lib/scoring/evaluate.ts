@@ -7,7 +7,8 @@
 import { z } from "zod";
 import { anthropic, MODEL_ORCHESTRATOR } from "@/lib/anthropic";
 import { QUESTION_BY_ID } from "@/lib/questions";
-import { getRubric, RUBRIC_VERSION, type SectionRubric } from "./rubrics";
+import { RUBRIC_VERSION, type SectionRubric } from "./rubrics";
+import { getEffectiveRubric } from "./rubricOverrides";
 
 // ---------- Output schema ----------------------------------------------------
 
@@ -86,7 +87,7 @@ export interface EvaluateOptions {
 export async function evaluateSection(
   opts: EvaluateOptions
 ): Promise<AssessmentResultT & { rubricVer: string }> {
-  const rubric = getRubric(opts.section);
+  const rubric = await getEffectiveRubric(opts.section);
   if (!rubric) throw new Error(`Unknown section: ${opts.section}`);
 
   // Filter to just the rubric's questions, with their labels for context
