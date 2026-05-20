@@ -38,7 +38,15 @@ function LoginInner() {
         setError(data.error || "Something went wrong.");
         return;
       }
-      router.push(next);
+      // If a specific `next` was requested, honor it. Otherwise admins go to
+      // the founders list and founders go to their onboarding flow.
+      const explicitNext = search.get("next");
+      const dest = explicitNext
+        ? explicitNext
+        : data.isAdmin
+        ? "/admin/users"
+        : "/onboarding";
+      router.push(dest);
       router.refresh();
     } catch {
       setError("Network error. Please try again.");

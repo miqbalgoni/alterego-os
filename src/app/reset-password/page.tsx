@@ -36,7 +36,7 @@ function ResetInner() {
       }
       setDone({ isAdmin: !!j.isAdmin });
       setTimeout(() => {
-        router.push(j.isAdmin ? "/admin" : "/onboarding");
+        router.push(j.isAdmin ? "/admin/users" : "/onboarding");
         router.refresh();
       }, 1500);
     } catch {

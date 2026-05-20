@@ -8,7 +8,10 @@ import { ShieldCheck, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from "l
 function AdminLoginInner() {
   const router = useRouter();
   const search = useSearchParams();
-  const next = search.get("next") || "/admin";
+  // Default landing for staff sign-in is the founders list — the page admins
+  // spend the most time in. If the user was redirected here from a specific
+  // /admin/* URL, we honor that instead.
+  const next = search.get("next") || "/admin/users";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -38,7 +41,7 @@ function AdminLoginInner() {
         await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
         return;
       }
-      router.push(next.startsWith("/admin") ? next : "/admin");
+      router.push(next.startsWith("/admin") ? next : "/admin/users");
       router.refresh();
     } catch {
       setError("Network error.");
