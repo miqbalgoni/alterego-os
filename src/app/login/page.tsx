@@ -172,6 +172,12 @@ function LoginInner() {
           )}
         </div>
       </div>
+
+      <div className="mt-6 text-[11px] text-hive-grey/60">
+        <Link href="/admin/login" className="hover:text-hive-orange transition">
+          Staff
+        </Link>
+      </div>
     </main>
   );
 }
